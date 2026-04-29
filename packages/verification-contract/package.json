@@ -1,6 +1,6 @@
 {
   "name": "@proveit/verification-contract",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Public ProveIT verification record types, schema, and fixtures.",
   "license": "Apache-2.0",
   "repository": {
