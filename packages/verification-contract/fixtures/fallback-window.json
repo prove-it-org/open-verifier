@@ -1,0 +1,48 @@
+{
+  "id": "22222222-2222-4222-8222-222222222222",
+  "word_code": "area·revive·diode",
+  "file_hash": "cf2757013d51110d52614fa545de5f498c3890c6a2f37de7875c5e393a4784f1",
+  "file_url": "https://cdn.example.com/fallback.jpg",
+  "media_available": true,
+  "file_size": 16,
+  "mime_type": "image/jpeg",
+  "is_video": false,
+  "verified": true,
+  "verification_status": "verified",
+  "failure_reason": null,
+  "captured_at": "2026-04-28T10:05:00.000Z",
+  "uploaded_at": "2026-04-28T10:05:05.000Z",
+  "captured_by": null,
+  "author_username": null,
+  "latitude": null,
+  "longitude": null,
+  "depth_capability": null,
+  "screen_detected": null,
+  "moire_score": null,
+  "moire_detected": null,
+  "c2pa": {
+    "enabled": false
+  },
+  "blockchain": {
+    "status": "disabled",
+    "tx_hash": null,
+    "block_number": null,
+    "network": "base-sepolia",
+    "explorer_url": null,
+    "registered_at": null,
+    "on_chain_verified": null
+  },
+  "verification_checks": [
+    {
+      "check": "hash_integrity",
+      "passed": true,
+      "checked_at": "2026-04-28T10:05:05.000Z"
+    }
+  ],
+  "trust": {
+    "level": "browser_hash_only",
+    "label": "Browser Upload (Hash-Only)",
+    "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
+    "equivalent_to_native": false
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "name": "@proveit/open-verifier",
+  "version": "0.1.0",
+  "description": "Self-contained verifier for public ProveIT verification records.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prove-it-org/open-verifier.git",
+    "directory": "packages/open-verifier"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": {
+    "proveit-verify": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "package.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "tsx --test test/*.test.ts",
+    "check:boundary": "node scripts/check-boundary.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "prepack": "npm run build && npm run check:boundary && npm run check:secrets"
+  },
+  "dependencies": {
+    "@proveit/verification-contract": "0.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.2",
+    "tsx": "^4.15.4",
+    "typescript": "^5.4.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

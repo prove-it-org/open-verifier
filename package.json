@@ -1,0 +1,26 @@
+{
+  "name": "@proveit/open-verifier-repo",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Public workspace for ProveIT verification contracts and verifier tooling.",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prove-it-org/open-verifier.git"
+  },
+  "workspaces": [
+    "packages/verification-contract",
+    "packages/open-verifier"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "typecheck": "npm run build --workspace @proveit/verification-contract && npm run typecheck --workspaces",
+    "test": "npm run build --workspaces && npm run test --workspaces --if-present",
+    "check:boundary": "node scripts/check-boundary.mjs",
+    "check:secrets": "node scripts/check-secrets.mjs",
+    "verify": "npm run typecheck && npm test && npm run check:boundary && npm run check:secrets"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}

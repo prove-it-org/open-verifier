@@ -1,0 +1,48 @@
+{
+  "id": "44444444-4444-4444-8444-444444444444",
+  "word_code": "wrong·word·code",
+  "file_hash": "fb05e9986d232f21abef94caf60bd8438351eae38dff8188694bb2092ea99ca3",
+  "file_url": "https://cdn.example.com/invalid.jpg",
+  "media_available": true,
+  "file_size": 15,
+  "mime_type": "image/jpeg",
+  "is_video": false,
+  "verified": true,
+  "verification_status": "verified",
+  "failure_reason": null,
+  "captured_at": "2026-04-28T10:15:00.000Z",
+  "uploaded_at": "2026-04-28T10:15:05.000Z",
+  "captured_by": null,
+  "author_username": null,
+  "latitude": null,
+  "longitude": null,
+  "depth_capability": null,
+  "screen_detected": null,
+  "moire_score": null,
+  "moire_detected": null,
+  "c2pa": {
+    "enabled": false
+  },
+  "blockchain": {
+    "status": "disabled",
+    "tx_hash": null,
+    "block_number": null,
+    "network": "base-sepolia",
+    "explorer_url": null,
+    "registered_at": null,
+    "on_chain_verified": null
+  },
+  "verification_checks": [
+    {
+      "check": "hash_integrity",
+      "passed": true,
+      "checked_at": "2026-04-28T10:15:05.000Z"
+    }
+  ],
+  "trust": {
+    "level": "browser_hash_only",
+    "label": "Browser Upload (Hash-Only)",
+    "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
+    "equivalent_to_native": false
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "33333333-3333-4333-8333-333333333333",
+  "word_code": "vast·ranch·xyst·2",
+  "file_hash": "bb8e7c8857dfcbf4341e8edafee5d9da8dbb94988909002e0dd416bf04428695",
+  "file_url": "https://cdn.example.com/suffix.jpg",
+  "media_available": true,
+  "file_size": 14,
+  "mime_type": "image/jpeg",
+  "is_video": false,
+  "verified": true,
+  "verification_status": "verified",
+  "failure_reason": null,
+  "captured_at": "2026-04-28T10:10:00.000Z",
+  "uploaded_at": "2026-04-28T10:10:05.000Z",
+  "captured_by": null,
+  "author_username": null,
+  "latitude": null,
+  "longitude": null,
+  "depth_capability": null,
+  "screen_detected": null,
+  "moire_score": null,
+  "moire_detected": null,
+  "c2pa": {
+    "enabled": true,
+    "claim_generator": "ProveIT/1.0.0",
+    "manifest_hash": "manifest-hash-fixture",
+    "cert_issuer": "ProveIT Fixture Cert",
+    "signed_at": "2026-04-28T10:10:05.000Z",
+    "ingredients": []
+  },
+  "blockchain": {
+    "status": "confirmed",
+    "tx_hash": "0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "block_number": 123456,
+    "network": "base-sepolia",
+    "explorer_url": "https://sepolia.basescan.org/tx/0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "registered_at": "2026-04-28T10:11:00.000Z",
+    "on_chain_verified": true
+  },
+  "verification_checks": [
+    {
+      "check": "hash_integrity",
+      "passed": true,
+      "checked_at": "2026-04-28T10:10:05.000Z"
+    },
+    {
+      "check": "c2pa_signing",
+      "passed": true,
+      "checked_at": "2026-04-28T10:10:05.000Z"
+    }
+  ],
+  "trust": {
+    "level": "browser_hash_only",
+    "label": "Browser Upload (Hash-Only)",
+    "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
+    "equivalent_to_native": false
+  }
+}

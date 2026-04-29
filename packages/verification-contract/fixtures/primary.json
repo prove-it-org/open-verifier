@@ -1,0 +1,61 @@
+{
+  "id": "11111111-1111-4111-8111-111111111111",
+  "word_code": "primal·robin·overcast",
+  "file_hash": "6463a543da7e36dd0ec71a3b8cb164f43163c1e808e61b8e82b27d58bde43962",
+  "file_url": "https://cdn.example.com/primary.jpg",
+  "media_available": true,
+  "file_size": 15,
+  "mime_type": "image/jpeg",
+  "is_video": false,
+  "verified": true,
+  "verification_status": "verified",
+  "failure_reason": null,
+  "captured_at": "2026-04-28T10:00:00.000Z",
+  "uploaded_at": "2026-04-28T10:00:05.000Z",
+  "captured_by": null,
+  "author_username": null,
+  "latitude": null,
+  "longitude": null,
+  "depth_capability": "lidar",
+  "screen_detected": false,
+  "moire_score": 0.03,
+  "moire_detected": false,
+  "c2pa": {
+    "enabled": false
+  },
+  "blockchain": {
+    "status": "disabled",
+    "tx_hash": null,
+    "block_number": null,
+    "network": "base-sepolia",
+    "explorer_url": null,
+    "registered_at": null,
+    "on_chain_verified": null
+  },
+  "verification_checks": [
+    {
+      "check": "hash_integrity",
+      "passed": true,
+      "checked_at": "2026-04-28T10:00:05.000Z"
+    },
+    {
+      "check": "depth_analysis",
+      "passed": true,
+      "checked_at": "2026-04-28T10:00:05.000Z"
+    },
+    {
+      "check": "moire_analysis",
+      "passed": true,
+      "checked_at": "2026-04-28T10:00:05.000Z"
+    }
+  ],
+  "trust": {
+    "level": "browser_hash_only",
+    "label": "Browser Upload (Hash-Only)",
+    "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
+    "equivalent_to_native": false,
+    "screen_detected": false,
+    "depth_verified": true,
+    "moire_detected": false
+  }
+}
