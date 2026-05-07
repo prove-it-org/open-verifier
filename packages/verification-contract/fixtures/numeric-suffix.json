@@ -54,5 +54,6 @@
     "label": "Browser Upload (Hash-Only)",
     "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
     "equivalent_to_native": false
-  }
+  },
+  "word_code_version": 1
 }

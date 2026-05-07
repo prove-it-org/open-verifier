@@ -3,9 +3,8 @@
 Self-contained verifier for public ProveIT verification records.
 
 This package validates the public `GET /api/v1/verify/{id}` contract, checks
-that the user-facing word code is derived from the published SHA-256 file hash,
-and can download the original proof asset to confirm its bytes hash to
-`file_hash`.
+that the server-issued word code has the expected three-word shape, and can
+download the original proof asset to confirm its bytes hash to `file_hash`.
 
 ## Install
 
@@ -45,7 +44,7 @@ This package verifies public, portable facts:
 - public JSON shape
 - `verified` and `verification_status` consistency
 - SHA-256 hash format
-- persisted word-code derivation
+- server-issued word-code shape and version
 - absence of legacy HMAC checks in public proof records
 - C2PA public metadata presence when enabled
 - optional original-file download hash

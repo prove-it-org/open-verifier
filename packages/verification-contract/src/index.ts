@@ -11,6 +11,7 @@ export interface VerificationCheck {
 export interface VerificationPayload {
   id: string;
   word_code: string;
+  word_code_version: number;
   file_hash: string;
   file_url?: string;
   media_available?: boolean;

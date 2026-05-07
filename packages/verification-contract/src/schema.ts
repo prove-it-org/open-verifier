@@ -7,6 +7,7 @@ export const verificationSchema = {
   required: [
     'id',
     'word_code',
+    'word_code_version',
     'file_hash',
     'file_size',
     'mime_type',
@@ -23,6 +24,7 @@ export const verificationSchema = {
   properties: {
     id: { type: 'string', format: 'uuid' },
     word_code: { type: 'string', minLength: 5 },
+    word_code_version: { type: 'number', minimum: 1 },
     file_hash: { type: 'string', pattern: '^[0-9a-f]{64}$' },
     file_url: { type: 'string' },
     media_available: { type: 'boolean' },

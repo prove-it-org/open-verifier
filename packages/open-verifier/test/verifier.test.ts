@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { test } from 'node:test';
 import {
-  isValidWordCodeForHash,
+  isValidWordCodeShape,
   normalizeWordCode,
   sha256Hex,
   verifyPayload,
@@ -17,16 +17,17 @@ async function fixture(name: string) {
 test('exports a JSON schema for the public verification record', () => {
   assert.equal(verificationSchema.title, 'ProveIT public verification record');
   assert.ok(verificationSchema.required.includes('word_code'));
+  assert.ok(verificationSchema.required.includes('word_code_version'));
   assert.ok(verificationSchema.required.includes('verification_checks'));
 });
 
-test('accepts primary, fallback-window, and numeric-suffix word codes', async () => {
-  for (const name of ['primary', 'fallback-window', 'numeric-suffix']) {
+test('accepts server-issued three-word codes without local hash derivation', async () => {
+  for (const name of ['primary', 'fallback-window']) {
     const payload = await fixture(name);
     const report = verifyPayload(payload);
     assert.equal(report.status, 'pass', name);
     assert.equal(
-      report.checks.find((check) => check.id === 'word_code_hash_derivation')?.passed,
+      report.checks.find((check) => check.id === 'word_code_shape')?.passed,
       true,
       name,
     );
@@ -35,7 +36,7 @@ test('accepts primary, fallback-window, and numeric-suffix word codes', async ()
 
 test('normalizes common user-entered word-code separators', () => {
   assert.equal(normalizeWordCode('Primal Robin.Overcast'), 'primal·robin·overcast');
-  assert.equal(normalizeWordCode('vast-ranch-xyst-2'), 'vast·ranch·xyst·2');
+  assert.equal(normalizeWordCode('Vast-Ranch-Xyst'), 'vast·ranch·xyst');
 });
 
 test('rejects invalid word-code records', async () => {
@@ -43,7 +44,7 @@ test('rejects invalid word-code records', async () => {
   const report = verifyPayload(payload);
   assert.equal(report.status, 'fail');
   assert.equal(
-    report.checks.find((check) => check.id === 'word_code_hash_derivation')?.passed,
+    report.checks.find((check) => check.id === 'word_code_shape')?.passed,
     false,
   );
 });
@@ -98,9 +99,8 @@ test('verifies a remote record using supplied fetch implementation', async () =>
   assert.equal(calls.length, 2);
 });
 
-test('direct word-code helper matches fixture expectations', async () => {
+test('direct word-code helper validates shape only', async () => {
   const fallback = await fixture('fallback-window');
-  const suffix = await fixture('numeric-suffix');
-  assert.equal(isValidWordCodeForHash(fallback.file_hash, fallback.word_code), true);
-  assert.equal(isValidWordCodeForHash(suffix.file_hash, suffix.word_code), true);
+  assert.equal(isValidWordCodeShape(fallback.word_code), true);
+  assert.equal(isValidWordCodeShape('vast·ranch·xyst·2'), false);
 });

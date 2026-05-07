@@ -57,5 +57,6 @@
     "screen_detected": false,
     "depth_verified": true,
     "moire_detected": false
-  }
+  },
+  "word_code_version": 1
 }

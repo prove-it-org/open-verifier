@@ -4,10 +4,10 @@ import {
   verificationSchema,
   type VerificationPayload,
 } from '@proveit/verification-contract';
-import { isValidWordCodeForHash, normalizeWordCode } from './wordCode.js';
+import { isValidWordCodeShape, normalizeWordCode } from './wordCode.js';
 
 export { verificationSchema };
-export { isValidWordCodeForHash, normalizeWordCode };
+export { isValidWordCodeShape, normalizeWordCode };
 export type { VerificationCheck, VerificationPayload } from '@proveit/verification-contract';
 
 export type VerificationCheckSeverity = 'error' | 'warning' | 'info';
@@ -50,6 +50,7 @@ export function validateVerificationPayload(input: unknown): { valid: true; valu
 
   requireString(input, 'id', errors);
   requireString(input, 'word_code', errors);
+  requireNumber(input, 'word_code_version', errors);
   requireString(input, 'file_hash', errors);
   requireNumber(input, 'file_size', errors);
   requireString(input, 'mime_type', errors);
@@ -107,10 +108,10 @@ export function verifyPayload(input: unknown, options: VerifyPayloadOptions = {}
   });
 
   addCheck(checks, {
-    id: 'word_code_hash_derivation',
+    id: 'word_code_shape',
     severity: 'error',
-    passed: isValidWordCodeForHash(payload.file_hash, payload.word_code),
-    detail: `${payload.word_code} must be derived from ${payload.file_hash}.`,
+    passed: isValidWordCodeShape(payload.word_code),
+    detail: `${payload.word_code} must be a server-issued three-word code.`,
   });
 
   const legacyHmacChecks = payload.verification_checks.filter((check) => check.check.toLowerCase() === 'hmac_signature');
