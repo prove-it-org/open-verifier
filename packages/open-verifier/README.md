@@ -22,6 +22,18 @@ node dist/cli.js {id} --api-base=https://proveit-app.com
 node dist/cli.js ../verification-contract/fixtures/primary.json --skip-download
 ```
 
+For local mobile E2E captures, the shared verification URL may still look like
+`https://proveit-app.com/verify/{id}`. That URL is only the public web link; the
+CLI needs the local API tunnel separately:
+
+```bash
+node dist/cli.js https://proveit-app.com/verify/{id} \
+  --api-base=https://example.trycloudflare.com/api/v1
+```
+
+Use the API URL printed by `./scripts/ios-dev-up.sh` or
+`./scripts/android-dev-up.sh`.
+
 The CLI exits non-zero when an error-level verification check fails.
 
 ## Library

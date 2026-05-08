@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import {
   isValidWordCodeShape,
@@ -97,6 +98,21 @@ test('verifies a remote record using supplied fetch implementation', async () =>
 
   assert.equal(report.status, 'pass');
   assert.equal(calls.length, 2);
+});
+
+test('CLI usage explains local API base overrides', () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      new URL('../dist/cli.js', import.meta.url).pathname,
+    ],
+    {
+      encoding: 'utf8',
+    },
+  );
+
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /For local dev captures/);
 });
 
 test('direct word-code helper validates shape only', async () => {
