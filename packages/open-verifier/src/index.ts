@@ -191,7 +191,11 @@ export async function verifyRemoteVerification(options: VerifyRemoteOptions): Pr
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   if (!fetchImpl) throw new Error('No fetch implementation is available.');
 
-  const apiBase = normalizeApiBase(options.apiBase ?? 'https://proveit-app.com');
+  const apiBase = normalizeApiBase(
+    options.apiBase
+      ?? apiBaseFromVerificationTarget(options.id)
+      ?? 'https://proveit-app.com',
+  );
   const id = extractVerificationId(options.id);
   const verifyResponse = await fetchImpl(`${apiBase}/api/v1/verify/${encodeURIComponent(id)}`);
   if (!verifyResponse.ok) {
@@ -246,6 +250,17 @@ export function normalizeApiBase(input: string): string {
     return url.toString().replace(/\/+$/, '');
   } catch {
     return trimmed.replace(/\/api\/v1$/, '');
+  }
+}
+
+export function apiBaseFromVerificationTarget(input: string): string | null {
+  try {
+    const url = new URL(input);
+    return url.pathname.includes('/verify/') || url.pathname.includes('/api/v1/verify/')
+      ? url.origin
+      : null;
+  } catch {
+    return null;
   }
 }
 

@@ -10,6 +10,7 @@ import {
   verifyRemoteVerification,
   verificationSchema,
   normalizeApiBase,
+  apiBaseFromVerificationTarget,
 } from '../src/index.js';
 
 async function fixture(name: string) {
@@ -103,6 +104,24 @@ test('verifies a remote record using supplied fetch implementation', async () =>
   assert.equal(calls[1], `https://proveit-app.com/download/${payload.id}`);
 });
 
+test('infers API base from production and tunnel verify URLs', async () => {
+  const payload = await fixture('primary');
+  const calls: string[] = [];
+  const fetchImpl: typeof fetch = async (input) => {
+    calls.push(String(input));
+    return Response.json(payload);
+  };
+
+  await verifyRemoteVerification({
+    id: `https://local-example.trycloudflare.com/verify/${payload.id}`,
+    fetchImpl,
+    download: false,
+  });
+
+  assert.equal(calls[0], `https://local-example.trycloudflare.com/api/v1/verify/${payload.id}`);
+  assert.equal(apiBaseFromVerificationTarget(`https://proveit-app.com/verify/${payload.id}`), 'https://proveit-app.com');
+});
+
 test('normalizes API base URLs from production origins or dev script API URLs', () => {
   assert.equal(normalizeApiBase('https://proveit-app.com'), 'https://proveit-app.com');
   assert.equal(normalizeApiBase('https://proveit-app.com/'), 'https://proveit-app.com');
@@ -122,7 +141,7 @@ test('CLI usage explains local API base overrides', () => {
   );
 
   assert.equal(result.status, 2);
-  assert.match(result.stderr, /For local dev captures/);
+  assert.match(result.stderr, /Full verify URLs infer their API host/);
 });
 
 test('direct word-code helper validates shape only', async () => {
