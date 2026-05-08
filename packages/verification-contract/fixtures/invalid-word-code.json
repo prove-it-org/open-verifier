@@ -1,6 +1,6 @@
 {
   "id": "44444444-4444-4444-8444-444444444444",
-  "word_code": "wrong·word·code",
+  "word_code": "wrong·word",
   "file_hash": "fb05e9986d232f21abef94caf60bd8438351eae38dff8188694bb2092ea99ca3",
   "file_url": "https://cdn.example.com/invalid.jpg",
   "media_available": true,
@@ -44,5 +44,6 @@
     "label": "Browser Upload (Hash-Only)",
     "description": "Uploaded via browser with hash verification, but without native device signing or attestation.",
     "equivalent_to_native": false
-  }
+  },
+  "word_code_version": 1
 }

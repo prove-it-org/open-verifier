@@ -2,7 +2,6 @@
 import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import {
-  extractVerificationId,
   verifyPayload,
   verifyRemoteVerification,
 } from './index.js';
@@ -12,17 +11,18 @@ async function main() {
   const target = args.find((arg) => !arg.startsWith('--'));
   if (!target) {
     console.error('Usage: proveit-verify <verify-url|capture-id|fixture.json> [--api-base=https://proveit-app.com] [--skip-download]');
+    console.error('Full verify URLs infer their API host. Use --api-base only when passing a bare capture ID.');
     process.exitCode = 2;
     return;
   }
 
-  const apiBase = readFlag(args, 'api-base') ?? 'https://proveit-app.com';
+  const apiBaseFlag = readFlag(args, 'api-base');
   const skipDownload = args.includes('--skip-download');
   const report = existsSync(target)
     ? verifyPayload(JSON.parse(await readFile(target, 'utf8')))
     : await verifyRemoteVerification({
-        id: extractVerificationId(target),
-        apiBase,
+        id: target,
+        apiBase: apiBaseFlag ?? undefined,
         download: !skipDownload,
       });
 

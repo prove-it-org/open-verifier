@@ -1,13 +1,16 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { spawnSync } from 'node:child_process';
 import { test } from 'node:test';
 import {
-  isValidWordCodeForHash,
+  isValidWordCodeShape,
   normalizeWordCode,
   sha256Hex,
   verifyPayload,
   verifyRemoteVerification,
   verificationSchema,
+  normalizeApiBase,
+  apiBaseFromVerificationTarget,
 } from '../src/index.js';
 
 async function fixture(name: string) {
@@ -17,16 +20,17 @@ async function fixture(name: string) {
 test('exports a JSON schema for the public verification record', () => {
   assert.equal(verificationSchema.title, 'ProveIT public verification record');
   assert.ok(verificationSchema.required.includes('word_code'));
+  assert.ok(verificationSchema.required.includes('word_code_version'));
   assert.ok(verificationSchema.required.includes('verification_checks'));
 });
 
-test('accepts primary, fallback-window, and numeric-suffix word codes', async () => {
-  for (const name of ['primary', 'fallback-window', 'numeric-suffix']) {
+test('accepts server-issued three-word codes without local hash derivation', async () => {
+  for (const name of ['primary', 'fallback-window']) {
     const payload = await fixture(name);
     const report = verifyPayload(payload);
     assert.equal(report.status, 'pass', name);
     assert.equal(
-      report.checks.find((check) => check.id === 'word_code_hash_derivation')?.passed,
+      report.checks.find((check) => check.id === 'word_code_shape')?.passed,
       true,
       name,
     );
@@ -35,7 +39,7 @@ test('accepts primary, fallback-window, and numeric-suffix word codes', async ()
 
 test('normalizes common user-entered word-code separators', () => {
   assert.equal(normalizeWordCode('Primal Robin.Overcast'), 'primal·robin·overcast');
-  assert.equal(normalizeWordCode('vast-ranch-xyst-2'), 'vast·ranch·xyst·2');
+  assert.equal(normalizeWordCode('Vast-Ranch-Xyst'), 'vast·ranch·xyst');
 });
 
 test('rejects invalid word-code records', async () => {
@@ -43,7 +47,7 @@ test('rejects invalid word-code records', async () => {
   const report = verifyPayload(payload);
   assert.equal(report.status, 'fail');
   assert.equal(
-    report.checks.find((check) => check.id === 'word_code_hash_derivation')?.passed,
+    report.checks.find((check) => check.id === 'word_code_shape')?.passed,
     false,
   );
 });
@@ -90,17 +94,58 @@ test('verifies a remote record using supplied fetch implementation', async () =>
 
   const report = await verifyRemoteVerification({
     id: payload.id,
-    apiBase: 'https://proveit-app.com',
+    apiBase: 'https://proveit-app.com/api/v1',
     fetchImpl,
   });
 
   assert.equal(report.status, 'pass');
   assert.equal(calls.length, 2);
+  assert.equal(calls[0], `https://proveit-app.com/api/v1/verify/${payload.id}`);
+  assert.equal(calls[1], `https://proveit-app.com/download/${payload.id}`);
 });
 
-test('direct word-code helper matches fixture expectations', async () => {
+test('infers API base from production and tunnel verify URLs', async () => {
+  const payload = await fixture('primary');
+  const calls: string[] = [];
+  const fetchImpl: typeof fetch = async (input) => {
+    calls.push(String(input));
+    return Response.json(payload);
+  };
+
+  await verifyRemoteVerification({
+    id: `https://local-example.trycloudflare.com/verify/${payload.id}`,
+    fetchImpl,
+    download: false,
+  });
+
+  assert.equal(calls[0], `https://local-example.trycloudflare.com/api/v1/verify/${payload.id}`);
+  assert.equal(apiBaseFromVerificationTarget(`https://proveit-app.com/verify/${payload.id}`), 'https://proveit-app.com');
+});
+
+test('normalizes API base URLs from production origins or dev script API URLs', () => {
+  assert.equal(normalizeApiBase('https://proveit-app.com'), 'https://proveit-app.com');
+  assert.equal(normalizeApiBase('https://proveit-app.com/'), 'https://proveit-app.com');
+  assert.equal(normalizeApiBase('https://example.trycloudflare.com/api/v1'), 'https://example.trycloudflare.com');
+  assert.equal(normalizeApiBase('https://example.trycloudflare.com/api/v1/'), 'https://example.trycloudflare.com');
+});
+
+test('CLI usage explains local API base overrides', () => {
+  const result = spawnSync(
+    process.execPath,
+    [
+      new URL('../dist/cli.js', import.meta.url).pathname,
+    ],
+    {
+      encoding: 'utf8',
+    },
+  );
+
+  assert.equal(result.status, 2);
+  assert.match(result.stderr, /Full verify URLs infer their API host/);
+});
+
+test('direct word-code helper validates shape only', async () => {
   const fallback = await fixture('fallback-window');
-  const suffix = await fixture('numeric-suffix');
-  assert.equal(isValidWordCodeForHash(fallback.file_hash, fallback.word_code), true);
-  assert.equal(isValidWordCodeForHash(suffix.file_hash, suffix.word_code), true);
+  assert.equal(isValidWordCodeShape(fallback.word_code), true);
+  assert.equal(isValidWordCodeShape('vast·ranch·xyst·2'), false);
 });
