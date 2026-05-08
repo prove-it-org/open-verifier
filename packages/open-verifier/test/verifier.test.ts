@@ -9,6 +9,7 @@ import {
   verifyPayload,
   verifyRemoteVerification,
   verificationSchema,
+  normalizeApiBase,
 } from '../src/index.js';
 
 async function fixture(name: string) {
@@ -92,12 +93,21 @@ test('verifies a remote record using supplied fetch implementation', async () =>
 
   const report = await verifyRemoteVerification({
     id: payload.id,
-    apiBase: 'https://proveit-app.com',
+    apiBase: 'https://proveit-app.com/api/v1',
     fetchImpl,
   });
 
   assert.equal(report.status, 'pass');
   assert.equal(calls.length, 2);
+  assert.equal(calls[0], `https://proveit-app.com/api/v1/verify/${payload.id}`);
+  assert.equal(calls[1], `https://proveit-app.com/download/${payload.id}`);
+});
+
+test('normalizes API base URLs from production origins or dev script API URLs', () => {
+  assert.equal(normalizeApiBase('https://proveit-app.com'), 'https://proveit-app.com');
+  assert.equal(normalizeApiBase('https://proveit-app.com/'), 'https://proveit-app.com');
+  assert.equal(normalizeApiBase('https://example.trycloudflare.com/api/v1'), 'https://example.trycloudflare.com');
+  assert.equal(normalizeApiBase('https://example.trycloudflare.com/api/v1/'), 'https://example.trycloudflare.com');
 });
 
 test('CLI usage explains local API base overrides', () => {

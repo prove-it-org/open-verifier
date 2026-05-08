@@ -191,7 +191,7 @@ export async function verifyRemoteVerification(options: VerifyRemoteOptions): Pr
   const fetchImpl = options.fetchImpl ?? globalThis.fetch;
   if (!fetchImpl) throw new Error('No fetch implementation is available.');
 
-  const apiBase = (options.apiBase ?? 'https://proveit-app.com').replace(/\/+$/, '');
+  const apiBase = normalizeApiBase(options.apiBase ?? 'https://proveit-app.com');
   const id = extractVerificationId(options.id);
   const verifyResponse = await fetchImpl(`${apiBase}/api/v1/verify/${encodeURIComponent(id)}`);
   if (!verifyResponse.ok) {
@@ -233,6 +233,20 @@ export async function verifyFixtureFile(path: string): Promise<VerificationRepor
 export function extractVerificationId(input: string): string {
   const match = input.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i);
   return match ? match[0] : input;
+}
+
+export function normalizeApiBase(input: string): string {
+  const trimmed = input.replace(/\/+$/, '');
+  try {
+    const url = new URL(trimmed);
+    url.pathname = url.pathname.replace(/\/+$/, '');
+    if (url.pathname === '/api/v1') {
+      url.pathname = '/';
+    }
+    return url.toString().replace(/\/+$/, '');
+  } catch {
+    return trimmed.replace(/\/api\/v1$/, '');
+  }
 }
 
 function addCheck(checks: VerificationReportCheck[], check: VerificationReportCheck) {
